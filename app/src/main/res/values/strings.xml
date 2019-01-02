@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Run up</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Main Activity -->
+    <!-- Record Fragment -->
+    <string name="str_record_start">スタート</string>
+    <string name="str_record_stop">ストップ</string>
+    <string name="str_record_pause">一時停止</string>
+    <string name="str_record_resume">再開</string>
+    <string name="str_record_lap">ラップ</string>
+
+    <string name="str_record_time_title">経過時間</string>
+    <string name="str_record_time">%1$02d分%2$02d秒</string>
+    <string name="str_record_speed_title">速度(時速)</string>
+    <string name="str_record_speed">%1$02.2f km/h</string>
+
+
+    <!-- Statistic Activity -->
+    <string name="statistic_activity_name">%1$d年%2$d月%3$d日 %4$d時%5$d分のアクティビティ</string>
+
+</resources>
