@@ -20,6 +20,11 @@ android {
                 cppFlags ""
             }
         }
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+            }
+        }
     }
     buildTypes {
         release {

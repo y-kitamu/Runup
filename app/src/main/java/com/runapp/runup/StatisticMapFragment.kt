@@ -27,7 +27,12 @@ class StatisticMapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, getFuncname())
         super.onViewCreated(view, savedInstanceState)
-        history_map.onCreate(savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        Log.d(TAG, getFuncname())
+        super.onActivityCreated(savedInstanceState)
+        history_map.onCreate(savedInstanceState?.getBundle(Constant.HISTORY_MAPVIEW_BUNDLE_KEY))
         history_map.getMapAsync(this)
     }
 
@@ -45,14 +50,14 @@ class StatisticMapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onPause() {
         Log.d(TAG, getFuncname())
-        history_map.onPause()
         super.onPause()
+        history_map.onPause()
     }
 
     override fun onStop() {
         Log.d(TAG, getFuncname())
-        history_map.onStop()
         super.onStop()
+        history_map.onStop()
     }
 
     override fun onDestroyView() {
@@ -63,8 +68,8 @@ class StatisticMapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onSaveInstanceState(outState: Bundle) {
         Log.d(TAG, getFuncname())
-        history_map.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
+        history_map.onSaveInstanceState(outState.getBundle(Constant.HISTORY_MAPVIEW_BUNDLE_KEY) ?: Bundle())
     }
 
     override fun onLowMemory() {

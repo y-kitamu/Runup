@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
@@ -60,9 +59,6 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, getFuncname())
         super.onViewCreated(view, savedInstanceState)
-
-        record_map.onCreate(savedInstanceState?.getBundle(Constant.MAPVIEW_BUNDLE_KEY))
-        record_map.getMapAsync(this)
 
         checkGPSPermission()
         if (mHasGPSPermission) {
@@ -135,6 +131,13 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        Log.d(TAG, getFuncname())
+        super.onActivityCreated(savedInstanceState)
+        record_map.onCreate(savedInstanceState?.getBundle(Constant.RECORD_MAPVIEW_BUNDLE_KEY))
+        record_map.getMapAsync(this)
+    }
+
     override fun onStart() {
         Log.d(TAG, getFuncname())
         super.onStart()
@@ -144,35 +147,32 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         Log.d(TAG, getFuncname())
         super.onResume()
-        if (::mMap.isInitialized) { // reinitialize mMap
-            record_map.getMapAsync(this)
-        }
         record_map.onResume()
         setTimeAndSpeed()
     }
 
     override fun onPause() {
         Log.d(TAG, getFuncname())
-        record_map.onPause()
         super.onPause()
+        record_map.onPause()
     }
 
     override fun onStop() {
         Log.d(TAG, getFuncname())
-        record_map.onStop()
         super.onStop()
+        record_map.onStop()
     }
 
     override fun onDestroyView() {
         Log.d(TAG, getFuncname())
-        record_map.onDestroy()
         super.onDestroyView()
+        record_map.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         Log.d(TAG, getFuncname())
-        record_map.onSaveInstanceState(outState.getBundle(Constant.MAPVIEW_BUNDLE_KEY) ?: Bundle())
         super.onSaveInstanceState(outState)
+        record_map.onSaveInstanceState(outState.getBundle(Constant.RECORD_MAPVIEW_BUNDLE_KEY) ?: Bundle())
     }
 
     override fun onLowMemory() {
@@ -238,7 +238,9 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location?) {
+            Log.d(TAG, getFuncname())
             if (location != null) {
+                Log.d(TAG, "location != null")
                 val isFirstData = !::mLatLon.isInitialized
 
                 mLatLon = LatLng(location.latitude, location.longitude)

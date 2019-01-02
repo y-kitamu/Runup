@@ -16,6 +16,11 @@
     <string name="str_record_speed_title">速度(時速)</string>
     <string name="str_record_speed">%1$02.2f km/h</string>
 
+    <!-- History Fragment -->
+    <string name="str_history_title">%1$d年%2$d月%3$d日 %4$d時%5$d分</string>
+    <string name="str_history_time">%1$d分%2$d秒</string>
+    <string name="str_history_distance">%1$2.2f (km)</string>
+
 
     <!-- Statistic Activity -->
     <string name="statistic_activity_name">%1$d年%2$d月%3$d日 %4$d時%5$d分のアクティビティ</string>

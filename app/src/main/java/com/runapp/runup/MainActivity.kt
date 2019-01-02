@@ -1,5 +1,6 @@
 package com.runapp.runup
 
+import android.app.ActivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         Constant.init(this)
 
         // TODO: 本番では削除
-        deleteDatabase(Constant.RECORD_DB_BASENAME + ".db")
+        // deleteDatabase(Constant.RECORD_DB_BASENAME + ".db")
 
         // TODO: 戻るボタンでもとのタブに戻れるようにする。
         val pagerAdapter = MainActivityPagerAdapter(supportFragmentManager)

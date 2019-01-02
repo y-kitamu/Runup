@@ -25,16 +25,16 @@ class Constant {
     }
 
     companion object {
+        const val ARG_PARAM1 = "arg_param1"
+        const val ARG_PARAM2 = "arg_param2"
 
-        val ARG_PARAM1 = "arg_param1"
-        val ARG_PARAM2 = "arg_param2"
+        const val MAX_COLORMAP_SPEED = 20.0f
+        const val MIN_COLORMAP_SPEED = 5.0f
+        const val MAP_LINE_WIDTH = 20.0f
+        const val RECORD_MAPVIEW_BUNDLE_KEY = "RecordMapViewBundleKey"
+        const val HISTORY_MAPVIEW_BUNDLE_KEY = "HistoryMapViewBundleKey"
 
-        val MAX_COLORMAP_SPEED = 20.0f
-        val MIN_COLORMAP_SPEED = 5.0f
-        val MAP_LINE_WIDTH = 20.0f
-        val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
-
-        val RECORD_DB_BASENAME = "record_database"
+        const val RECORD_DB_BASENAME = "record_database"
         lateinit var RECORD_DB: RecordDatabase
         lateinit var RECORD_DIR: File
 
