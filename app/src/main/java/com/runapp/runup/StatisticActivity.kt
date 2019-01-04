@@ -5,13 +5,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.support.design.widget.TabLayout
-import android.util.Log
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_statistic.*
 import java.util.*
 import java.util.concurrent.CountDownLatch
 
 class StatisticActivity : AppCompatActivity() {
-    private val TAG = "StatisticActivity"
 
     private lateinit var mStartDate: Date
     private lateinit var mEndDate: Date
@@ -43,7 +42,8 @@ class StatisticActivity : AppCompatActivity() {
         }
         latch.await()
 
-        if (!::mRecord.isInitialized) {
+        if (!::mRecord.isInitialized || mRecord.recordList.isEmpty()) {
+            Toast.makeText(this, getString(R.string.statistic_activity_data_error), Toast.LENGTH_LONG).show()
             finish()
             return
         }

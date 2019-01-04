@@ -13,23 +13,25 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_record.*
 
 
-class RecordFragment : Fragment(), OnMapReadyCallback {
+class RecordFragment : SupportMapFragment(), OnMapReadyCallback {
     // TODO: 加速度計をつかって GPS が弱いときでも精度向上させる
     private val TAG = "RecordFragment" // TODO : remove this line when release
 
@@ -51,14 +53,18 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
 
     private val mHandler = Handler()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_record, container, false)
-    }
+    private lateinit var mInfoView: View
+
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+//                              savedInstanceState: Bundle?): View? {
+//        super.onCreateView(inflater, container, savedInstanceState)
+//        return inflater.inflate(R.layout.fragment_map, container, false)
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, getFuncname())
         super.onViewCreated(view, savedInstanceState)
+
 
         checkGPSPermission()
         if (mHasGPSPermission) {
@@ -70,115 +76,79 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
             mLocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0.0f, locationListener)
 
             showButtons()
-            btn_start.isClickable = ::mLocation.isInitialized && ::mMap.isInitialized
-            btn_start.setOnClickListener {
-                mIsGPSEnabled = mLocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                mIsNetworkEnabled = mLocManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
-                if (!mIsGPSEnabled && !mIsNetworkEnabled) {
-                    AlertDialog.Builder(activity)
-                        .setTitle("GPS")
-                        .setMessage("GPSがオフになっています。設定からGPSをオンにしてください。")
-                        .setPositiveButton("OK") { _, _ -> startSettingIntent() }
-                        .setNegativeButton("CANCEL") { _, _ -> }
-                        .show()
-                }
-
-                if (mIsGPSEnabled || mIsNetworkEnabled) {
-                    Log.d(TAG, "start recording")
-                    drawLineOnMap()
-                    mRecord = Record().apply { this.start(mLocation) }
-                    mIsRecording = true
-                    showButtons()
-                    setTimeAndSpeed()
-                    mHandler.post(timerRunnable)
-                } else {
-                    Log.d(TAG, "can not start recording")
-                }
-            }
-            btn_pause.setOnClickListener {
-                if (mIsRecording) {
-                    mHandler.removeCallbacks(timerRunnable)
-                    btn_pause.text = getString(R.string.str_record_resume)
-                } else {
-                    mHandler.post(timerRunnable)
-                    btn_pause.text = getString(R.string.str_record_pause)
-                }
-                mIsRecording = !mIsRecording
-            }
-            btn_lap.setOnClickListener {
-                mRecord.lap()
-            }
-            btn_stop.setOnClickListener {
-                mHandler.removeCallbacks(timerRunnable)
-                mIsRecording = false
-                showButtons()
-                mRecord.stop()
-
-                for (polyline in mPolylines) {
-                    polyline.remove()
-                }
-                mPolylines.clear()
-
-                val intent = Intent(activity, StatisticActivity::class.java).apply {
-                    putExtra(Constant.ARG_PARAM1, mRecord.startDate.time)
-                    putExtra(Constant.ARG_PARAM2, mRecord.endDate.time)
-                }
-                startActivity(intent)
-
-                mRecord = Record()
-            }
+//            btn_start.isClickable = ::mLocation.isInitialized && ::mMap.isInitialized
+//            btn_start.setOnClickListener {
+//                mIsGPSEnabled = mLocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+//                mIsNetworkEnabled = mLocManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+//
+//                if (!mIsGPSEnabled && !mIsNetworkEnabled) {
+//                    AlertDialog.Builder(activity)
+//                        .setTitle("GPS")
+//                        .setMessage("GPSがオフになっています。設定からGPSをオンにしてください。")
+//                        .setPositiveButton("OK") { _, _ -> startSettingIntent() }
+//                        .setNegativeButton("CANCEL") { _, _ -> }
+//                        .show()
+//                }
+//
+//                if (mIsGPSEnabled || mIsNetworkEnabled) {
+//                    Log.d(TAG, "start recording")
+//                    drawLineOnMap()
+//                    mRecord = Record().apply { this.start(mLocation) }
+//                    mIsRecording = true
+//                    showButtons()
+//                    setTimeAndSpeed()
+//                    mHandler.post(timerRunnable)
+//                } else {
+//                    Log.d(TAG, "can not start recording")
+//                }
+//            }
+//            btn_pause.setOnClickListener {
+//                if (mIsRecording) {
+//                    mHandler.removeCallbacks(timerRunnable)
+//                    btn_pause.text = getString(R.string.str_record_resume)
+//                } else {
+//                    mHandler.post(timerRunnable)
+//                    btn_pause.text = getString(R.string.str_record_pause)
+//                }
+//                mIsRecording = !mIsRecording
+//            }
+//            btn_lap.setOnClickListener {
+//                mRecord.lap()
+//            }
+//            btn_stop.setOnClickListener {
+//                mHandler.removeCallbacks(timerRunnable)
+//                mIsRecording = false
+//                showButtons()
+//                mRecord.stop()
+//
+//                for (polyline in mPolylines) {
+//                    polyline.remove()
+//                }
+//                mPolylines.clear()
+//
+//                val intent = Intent(activity, StatisticActivity::class.java).apply {
+//                    putExtra(Constant.ARG_PARAM1, mRecord.startDate.time)
+//                    putExtra(Constant.ARG_PARAM2, mRecord.endDate.time)
+//                }
+//                startActivity(intent)
+//
+//                mRecord = Record()
+//            }
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Log.d(TAG, getFuncname())
         super.onActivityCreated(savedInstanceState)
-        record_map.onCreate(savedInstanceState?.getBundle(Constant.RECORD_MAPVIEW_BUNDLE_KEY))
-        record_map.getMapAsync(this)
-    }
-
-    override fun onStart() {
-        Log.d(TAG, getFuncname())
-        super.onStart()
-        record_map.onStart()
+//        record_map.onCreate(savedInstanceState?.getBundle(Constant.RECORD_MAPVIEW_BUNDLE_KEY))
+//        record_map.getMapAsync(this)
     }
 
     override fun onResume() {
         Log.d(TAG, getFuncname())
         super.onResume()
-        record_map.onResume()
+
         setTimeAndSpeed()
-    }
-
-    override fun onPause() {
-        Log.d(TAG, getFuncname())
-        super.onPause()
-        record_map.onPause()
-    }
-
-    override fun onStop() {
-        Log.d(TAG, getFuncname())
-        super.onStop()
-        record_map.onStop()
-    }
-
-    override fun onDestroyView() {
-        Log.d(TAG, getFuncname())
-        super.onDestroyView()
-        record_map.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        Log.d(TAG, getFuncname())
-        super.onSaveInstanceState(outState)
-        record_map.onSaveInstanceState(outState.getBundle(Constant.RECORD_MAPVIEW_BUNDLE_KEY) ?: Bundle())
-    }
-
-    override fun onLowMemory() {
-        Log.d(TAG, getFuncname())
-        super.onLowMemory()
-        record_map.onLowMemory()
     }
 
     private fun checkGPSPermission() {
@@ -207,7 +177,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, getFuncname())
         mMap = googleMap
-        btn_start.isClickable = ::mLocation.isInitialized
+//        btn_start.isClickable = ::mLocation.isInitialized
         updateCameraPosition()
 
         if (mHasGPSPermission) {
@@ -227,13 +197,13 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun showButtons() {
-        if (mIsRecording) {
-            start_btn_layout.visibility = View.GONE
-            record_btn_layout.visibility = View.VISIBLE
-        } else {
-            start_btn_layout.visibility = View.VISIBLE
-            record_btn_layout.visibility = View.GONE
-        }
+//        if (mIsRecording) {
+//            start_btn_layout.visibility = View.GONE
+//            record_btn_layout.visibility = View.VISIBLE
+//        } else {
+//            start_btn_layout.visibility = View.VISIBLE
+//            record_btn_layout.visibility = View.GONE
+//        }
     }
 
     private val locationListener = object : LocationListener {
@@ -247,7 +217,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
                 mLocation = location
 
                 if (isFirstData) {
-                    btn_start.isClickable = ::mMap.isInitialized
+//                    btn_start.isClickable = ::mMap.isInitialized
                     updateCameraPosition()
                 }
 
@@ -300,16 +270,13 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setTimeAndSpeed() {
-        val speed = if (mRecord.duration == 0) 0.0f else 36f * mRecord.distance / mRecord.duration
-        text_time.text = String.format(getString(R.string.str_record_time),
-            mRecord.duration / 600, mRecord.duration / 10 % 60)
-        text_speed.text = String.format(getString(R.string.str_record_speed), speed)
+//        val speed = if (mRecord.duration == 0) 0.0f else 36f * mRecord.distance / mRecord.duration
+//        text_time.text = String.format(getString(R.string.str_record_time),
+//            mRecord.duration / 600, mRecord.duration / 10 % 60)
+//        text_speed.text = String.format(getString(R.string.str_record_speed), speed)
     }
 
     companion object {
-        fun newInstance(): RecordFragment =
-                RecordFragment().apply {
-                    arguments = Bundle().apply {}
-                }
+        fun newInstance(): RecordFragment = RecordFragment()
     }
 }

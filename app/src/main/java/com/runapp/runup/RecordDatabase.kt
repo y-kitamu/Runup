@@ -2,11 +2,9 @@ package com.runapp.runup
 
 import android.arch.persistence.room.*
 import android.location.Location
-import android.os.CountDownTimer
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
-import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.File
@@ -87,6 +85,7 @@ class Record {
     }
 
     fun loadDataFromJson() {
+        // TODO: 他の Utility Library を使ったほうがいいのか？　https://developers.google.com/maps/documentation/android-sdk/utility/
         val type =
             object : TypeToken<MutableList<Triple<MutableList<Location>, Float, Int>>>(){}.type
         val file = File(
